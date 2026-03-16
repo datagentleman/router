@@ -3,6 +3,7 @@ package routes
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
 )
@@ -17,7 +18,7 @@ type Router interface {
 	Fetch(ctx context.Context, src string, dst []string) ([]Metrics, error)
 }
 
-var router = NewOSRMRouter()
+var router Router = NewOSRMRouter()
 
 // Run starts the HTTP server.
 func Run() {
@@ -45,6 +46,13 @@ func routeHandler(w http.ResponseWriter, r *http.Request) {
 
 	metrics, err := router.Fetch(r.Context(), req.Src, req.Dst)
 	if err != nil {
+		log.Printf("route fetch failed: %v", err)
+
+		if errors.Is(err, errUpstreamTimeout) {
+			http.Error(w, err.Error(), http.StatusGatewayTimeout)
+			return
+		}
+
 		http.Error(w, err.Error(), http.StatusBadGateway)
 		return
 	}

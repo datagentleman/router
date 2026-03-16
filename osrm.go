@@ -6,6 +6,7 @@ import (
 	"errors"
 	"net/http"
 	"net/url"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -14,6 +15,7 @@ import (
 var (
 	errInvalidResponse = errors.New("osrm: invalid response")
 	errInvalidMetrics  = errors.New("osrm: invalid metrics")
+	errUpstreamTimeout = errors.New("osrm: upstream timeout")
 )
 
 const osrmBaseURL = "http://router.project-osrm.org"
@@ -41,15 +43,19 @@ func NewOSRMRouter() OSRMRouter {
 
 // Fetch calls the OSRM table API and maps the response into internal metrics.
 func (osrm OSRMRouter) Fetch(ctx context.Context, src string, dst []string) ([]Metrics, error) {
-	url := osrm.buildURL(src, dst)
+	reqURL := osrm.buildURL(src, dst)
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, reqURL, nil)
 	if err != nil {
 		return nil, err
 	}
 
 	resp, err := osrm.client.Do(req)
 	if err != nil {
+		if os.IsTimeout(err) || errors.Is(err, context.DeadlineExceeded) {
+			return nil, errUpstreamTimeout
+		}
+
 		return nil, err
 	}
 	defer resp.Body.Close()
