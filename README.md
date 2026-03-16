@@ -40,6 +40,26 @@ Example request:
 curl "http://localhost:8080/route?src=13.388860,52.517037&dst=13.397634,52.529407&dst=13.428555,52.523219"
 ```
 
+Example response:
+
+```json
+{
+  "source": "13.388860,52.517037",
+  "routes": [
+    {
+      "destination": "13.428555,52.523219",
+      "duration": 400,
+      "distance": 3000
+    },
+    {
+      "destination": "13.397634,52.529407",
+      "duration": 500,
+      "distance": 1800
+    }
+  ]
+}
+```
+
 ## Test
 
 Run the default test suite:
