@@ -14,7 +14,7 @@ type Response struct {
 }
 
 // newRouteResponse builds the outward API response and sorts routes by duration and distance.
-func newRouteResponse(src string, dst []string, metrics []Metrics) Response {
+func newResponse(src string, dst []string, metrics []Metrics) Response {
 	routes := make([]Route, 0, len(dst))
 
 	for i, destination := range dst {

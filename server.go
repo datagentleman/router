@@ -51,7 +51,7 @@ func routeHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 
-	err = json.NewEncoder(w).Encode(newRouteResponse(req.Src, req.Dst, metrics))
+	err = json.NewEncoder(w).Encode(newResponse(req.Src, req.Dst, metrics))
 	if err != nil {
 		http.Error(w, "failed to encode response", http.StatusInternalServerError)
 	}

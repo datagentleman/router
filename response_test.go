@@ -2,7 +2,7 @@ package routes
 
 import "testing"
 
-func TestNewRouteResponseSortsByDurationThenDistance(t *testing.T) {
+func TestNewResponseSortsByDurationThenDistance(t *testing.T) {
 	src := "13.388860,52.517037"
 
 	dst := []string{
@@ -17,7 +17,7 @@ func TestNewRouteResponseSortsByDurationThenDistance(t *testing.T) {
 		{Duration: 400, Distance: 2000},
 	}
 
-	resp := newRouteResponse(src, dst, metrics)
+	resp := newResponse(src, dst, metrics)
 
 	if resp.Source != src {
 		t.Fatalf("unexpected source: %q", resp.Source)

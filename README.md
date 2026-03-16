@@ -1,4 +1,4 @@
-# Router Routes Service
+# Router Service
 
 Small Go HTTP service that accepts one source coordinate and multiple destination coordinates, and returns routes sorted by duration and distance.
 
